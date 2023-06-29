@@ -33,6 +33,7 @@ def convert_to_wav(input_file, output_file):
 def transcribe_with_whisper(audio_file):
     model = whisper.load_model("base")
     result = model.transcribe(audio_file)
+    st.write(result)
     return result["text"]
 
 
