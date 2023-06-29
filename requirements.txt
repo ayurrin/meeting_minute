@@ -1,0 +1,6 @@
+streamlit
+openai
+SpeechRecognition
+pydub
+moviepy
+openai-whisper
