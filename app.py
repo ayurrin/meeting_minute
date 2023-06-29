@@ -33,7 +33,6 @@ def convert_to_wav(input_file, output_file):
 def transcribe_with_whisper(audio_file):
     model = whisper.load_model("base")
     result = model.transcribe(audio_file)
-    st.write(result)
     return result["text"]
 
 
@@ -45,24 +44,34 @@ def transcribe_with_speechrecognition(audio_file):
     return r.recognize_google(audio, language="ja-JP")
 
 
+# 音声認識（New Whisper）
+def transcribe_with_new_whisper(audio_file):
+    audio = open(audio_file, "rb")
+    result = openai.Audio.transcribe("whisper-1", audio)
+    return result["text"]
+
+
 # 音声ファイルの変換と音声認識の処理
 def process_transcription(input_file, output_file, engine):
-    # try:
+    try:
         converted_file = convert_to_wav(input_file, output_file)
         st.write("ファイルが変換されました: {}".format(converted_file))
 
         if engine == "whisper":
             transcription = transcribe_with_whisper(converted_file)
-            st.write("音声認識結果 (Whisper): {}".format(transcription))
+            st.write("音声認識結果 (Whisper) {}".format(transcription))
         elif engine == "speechrecognition":
             transcription = transcribe_with_speechrecognition(converted_file)
             st.write("音声認識結果 (SpeechRecognition): {}".format(transcription))
+        elif engine == "new whisper":
+            transcription = transcribe_with_new_whisper(converted_file)
+            st.write("音声認識結果 (New Whisper): {}".format(transcription))
         else:
             raise ValueError("Invalid engine: {}".format(engine))
-    # except ValueError as e:
-    #     st.write(str(e))
-    # except FileNotFoundError:
-    #     st.write("ファイルが見つかりません。")
+    except ValueError as e:
+        st.write(str(e))
+    except FileNotFoundError:
+        st.write("ファイルが見つかりません。")
     
 
 def set_api():
@@ -90,7 +99,7 @@ st.markdown("## 議事録要約アプリ")
 #API入力
 api_key = st.text_input("OpenAI APIキーを入力してください", on_change=set_api, key='api_key')
 # 選択したエンジン
-engine = st.selectbox("音声認識エンジンの選択", ["whisper", "speechrecognition"])
+engine = st.selectbox("音声認識エンジンの選択", ["whisper", "speechrecognition","new whisper"])
 
 # 音声ファイルのアップロード
 uploaded_file = st.file_uploader("音声ファイルをアップロードしてください", type=["mp3", "mp4"])
