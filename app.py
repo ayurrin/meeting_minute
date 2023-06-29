@@ -47,7 +47,7 @@ def transcribe_with_speechrecognition(audio_file):
 
 # 音声ファイルの変換と音声認識の処理
 def process_transcription(input_file, output_file, engine):
-    try:
+    # try:
         converted_file = convert_to_wav(input_file, output_file)
         st.write("ファイルが変換されました: {}".format(converted_file))
 
@@ -59,10 +59,10 @@ def process_transcription(input_file, output_file, engine):
             st.write("音声認識結果 (SpeechRecognition): {}".format(transcription))
         else:
             raise ValueError("Invalid engine: {}".format(engine))
-    except ValueError as e:
-        st.write(str(e))
-    except FileNotFoundError:
-        st.write("ファイルが見つかりません。")
+    # except ValueError as e:
+    #     st.write(str(e))
+    # except FileNotFoundError:
+    #     st.write("ファイルが見つかりません。")
     
 
 def set_api():
